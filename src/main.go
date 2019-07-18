@@ -7,8 +7,8 @@ import (
 	"net/http"
 )
 
-const ClientId = "TruAuthDemoResourceServer"
-const ClientSecret = "some-client-secret-123"
+const ClientId = "testid"
+const ClientSecret = "test"
 const AuthServer = "http://localhost:4820"
 const GrantType = "authorization_code"
 const RedirectURI = "http://localhost:3000/redirectEndpoint"
@@ -27,7 +27,7 @@ type TokenResponse struct {
 
 func main() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/token", getToken) // Todo: change to code
+	mux.HandleFunc("/code", getToken) // Todo: change to code
 
 	fmt.Println("Server Started on Port 4821")
 	http.ListenAndServe(":4821", mux)
@@ -42,6 +42,7 @@ func getToken(w http.ResponseWriter, req *http.Request) {
 	tokenEndpoint := fmt.Sprintf("%s/token?grant_type=%s&code=%s&redirect_uri=%s&client_id=%s&client_secret=%s", AuthServer, GrantType, tokenRequest.AuthorizationCode, RedirectURI, ClientId, ClientSecret)
 	response, err := http.Post(tokenEndpoint, "application/json", nil)
 	if err != nil {
+		fmt.Println(err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
